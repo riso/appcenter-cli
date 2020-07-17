@@ -1,0 +1,20 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseDate = void 0;
+const commandline_1 = require("../../../util/commandline");
+const _ = require("lodash");
+function parseDate(date, defaultDate, errorMessage) {
+    if (!_.isNil(date)) {
+        const timeStamp = Date.parse(date);
+        if (!_.isNaN(timeStamp)) {
+            return new Date(timeStamp);
+        }
+        else {
+            throw commandline_1.failure(commandline_1.ErrorCodes.InvalidParameter, errorMessage);
+        }
+    }
+    else {
+        return defaultDate;
+    }
+}
+exports.parseDate = parseDate;

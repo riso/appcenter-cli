@@ -1,0 +1,36 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.reportBuilds = exports.reportBuild = exports.getBuildReportObject = void 0;
+const PortalHelper = require("../../../../util/portal/portal-helper");
+const interaction_1 = require("../../../../util/interaction");
+const _ = require("lodash");
+const reportFormat = [
+    ["Branch", "sourceBranch"],
+    ["Build ID", "buildNumber"],
+    ["Build status", "status"],
+    ["Build result", "result"],
+    ["Build URL", "url"],
+    ["Commit author", "author"],
+    ["Commit message", "message"],
+    ["Commit SHA", "sha"],
+];
+function getBuildReportObject(build, commitInfo, app, portalBaseUrl) {
+    return _(build)
+        .pick(["sourceBranch", "buildNumber", "status", "result"])
+        .extend({
+        author: `${commitInfo.commit.author.name} <${commitInfo.commit.author.email}>`,
+        message: commitInfo.commit.message,
+        sha: commitInfo.sha,
+        url: PortalHelper.getPortalBuildLink(portalBaseUrl, app.ownerName, app.appName, build.sourceBranch, build.id.toString()),
+    })
+        .value();
+}
+exports.getBuildReportObject = getBuildReportObject;
+function reportBuild(outputObject) {
+    interaction_1.out.report(reportFormat, outputObject);
+}
+exports.reportBuild = reportBuild;
+function reportBuilds(outputObjects) {
+    interaction_1.out.reportNewLineSeparatedArray(reportFormat, outputObjects);
+}
+exports.reportBuilds = reportBuilds;
